@@ -1,8 +1,8 @@
 package mb
 
 type Metadata struct {
-	Generator string
-	Created string
+	Generator string `xml:"attr"`
+	Created string `xml:"attr"`
 	Artist *Artist
 	Release *Release
 	ReleaseGroup *ReleaseGroup
