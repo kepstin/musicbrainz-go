@@ -1,8 +1,11 @@
 package mb
 
+import "xml"
+
 type Metadata struct {
-	Generator string `xml:"attr"`
-	Created string `xml:"attr"`
+	XMLName xml.Name `metadata`
+	Generator string `attr`
+	Created string `attr`
 	Artist *Artist
 	Release *Release
 	ReleaseGroup *ReleaseGroup
@@ -31,8 +34,9 @@ type Metadata struct {
 }
 
 type Artist struct {
-	Id string
-	Type string
+	XMLName xml.Name `artist`
+	Id string `attr`
+	Type string `attr`
 	Name *string
 	SortName *string
 	Gender *string
@@ -53,7 +57,8 @@ type Artist struct {
 }
 
 type Release struct {
-	Id string
+	XMLName xml.Name `release`
+	Id string `attr`
 	Title *string
 	Status *string
 	Quality *string
@@ -69,13 +74,18 @@ type Release struct {
 	LabelInfoList *LabelInfoList
 	MediumList *MediumList
 	RelationList []*RelationList
+	TagList *TagList
+	UserTagList *UserTagList
 }
 
 type ReleaseGroup struct {
-	Id string
-	Type string
+	XMLName xml.Name `release-group`
+	Id string `attr`
+	Type string `attr`
 	Title *string
+	Disambiguation *string
 	Comment *string
+	FirstReleaseDate *string
 	ArtistCredit *ArtistCredit
 	ReleaseList *ReleaseList
 	RelationList []*RelationList
@@ -86,9 +96,10 @@ type ReleaseGroup struct {
 }
 
 type Recording struct {
-	Id string
+	XMLName xml.Name `recording`
+	Id string `attr`
 	Title *string
-	Length uint
+	Length uint // milliseconds
 	Disambiguation *string
 	ArtistCredit *ArtistCredit
 	ReleaseList *ReleaseList
@@ -102,8 +113,9 @@ type Recording struct {
 }
 
 type Label struct {
-	Id string
-	Type string
+	XMLName xml.Name `label`
+	Id string `attr`
+	Type string `attr`
 	Name *string
 	SortName *string
 	LabelCode uint
@@ -120,43 +132,56 @@ type Label struct {
 }
 
 type Work struct {
-	Id string "attr"
-	Type string "attr"
-	Title string
-	ArtistCredit *ArtistCredit
-	ISWC string
-	Disambiguation string
-//	AliasList
-//	RelationList
-//	TagList
-//	UserTagList
+	XMLName xml.Name `work`
+	Id string `attr`
+	Type string `attr`
+	Title *string
+	ArtistCredit *ArtistCredit // Not used
+	ISWC *string
+	Disambiguation *string
+	AliasList *AliasList
+	RelationList *RelationList
+	TagList *TagList
+	UserTagList *UserTagList
 	Rating *Rating
 	UserRating *UserRating
 }
 
 type Disc struct {
-	Id string "attr"
+	XMLName xml.Name `disc`
+	Id string `attr`
 	Sectors uint
-//	ReleaseList
+	ReleaseList *ReleaseList
 }
 
 type PUID struct {
-	Id string "attr"
-//	RecordingList
+	XMLName xml.Name `puid`
+	Id string `attr`
+	RecordingList *RecordingList
 }
 
 type ISRC struct {
-	Id string "attr"
-//	RecordingList
+	XMLName xml.Name `isrc`
+	Id string `attr`
+	RecordingList *RecordingList
 }
 
 type ArtistCredit struct {
+	XMLName xml.Name `artist-credit`
 	NameCredit []*NameCredit
 }
+type NameCredit struct {
+	XMLName xml.Name `name-credit`
+	JoinPhrase string `attr`
+	Name *string
+	Artist *Artist
+}
+
 
 type Relation struct {
-	Type string "attr"
-	Target string  "attr"
+	XMLName xml.Name `relation`
+	Type string `attr`
+	Target string  `attr`
 	Direction string
 	Begin string
 	End string
@@ -169,35 +194,41 @@ type Relation struct {
 }
 
 type Alias struct {
-	Type string "attr"
-	Script string "attr"
+	XMLName xml.Name `alias`
+	Locale string `attr`
+	Text string `chardata`
 }
 
 type Tag struct {
-	Count uint "attr"
+	XMLName xml.Name `tag`
+	Count uint `attr`
 	Name string
 }
 
 type UserTag struct {
+	XMLName xml.Name `user-tag`
 	Name string
 }
 
 type Rating struct {
+	XMLName xml.Name `rating`
 	VotesCount uint
-	Rating float32
-	RatingPercent float32
+	Rating float32 `chardata`
 }
 
 type UserRating struct {
-	Data uint "chardata"
+	XMLName xml.Name `user-rating`
+	Rating uint `chardata`
 }
 
 type LabelInfo struct {
+	XMLName xml.Name `label-info`
 	CatalogNumber *string
 	Label *Label
 }
 
 type Medium struct {
+	XMLName xml.Name `medium`
 	Title *string
 	Position uint
 	Format *string
@@ -206,70 +237,79 @@ type Medium struct {
 }
 
 type Track struct {
+	XMLName xml.Name `track`
 	Position uint
 	Title *string
 	Length uint
 	ArtistCredit *ArtistCredit
 	Recording *Recording
-	Even bool
 }
 
 type Annotation struct {
-	Type string
+	XMLName xml.Name `annotation`
+	Type string `attr`
 	Entity string
 	Name string
 	Text string
 }
 
 type CDStub struct {
-	Id string "attr"
+	XMLName xml.Name `cdstub`
+	Id string `attr`
 	Title string
-	Artist string
-	Barcode string
-	Comment string
-//	NonMBTrackList *NonMBTrackList
+	Artist *string
+	Barcode *string
+	Comment *string
+	NonMBTrackList *NonMBTrackList
 }
 
 type FreeDBDisc struct {
-	Id string "attr"
+	XMLName xml.Name `freedb-disc`
+	Id string `attr`
 	Title string
-	Artist string
-	Category string
-	Year string
-//	NonMBTrackList *NonMBTrackList
+	Artist *string
+	Category *string
+	Year *string
+	NonMBTrackList *NonMBTrackList
 }
 
 type NonMBTrack struct {
+	XMLName xml.Name `track`
 	Title string
-	Artist string
+	Artist *string
 	Length uint
 }
 
 type Collection struct {
-	Id string "attr"
+	XMLName xml.Name `collection`
+	Id string `attr`
 	Name string
-	Editor string
-//	ReleaseList *ReleaseList
+	Editor *string
+	ReleaseList *ReleaseList
 }
 
 type ArtistList struct {
-	Artist []Artist
+	XMLName xml.Name `artist-list`
+	Artist []*Artist
 }
 
 type MediumList struct {
+	XMLName xml.Name `medium-list`
 	List
 	TrackCount uint
 	Medium []*Medium
 }
 
 type ReleaseList struct {
+	XMLName xml.Name `release-list`
 	List
-	Release []Release
+	Release []*Release
 }
 
 type ReleaseGroupList struct {
+	XMLName xml.Name `release-group-list`
 	List
-	ReleaseGroup []ReleaseGroup
+	ReleaseGroup []*ReleaseGroup
 }
 
 type AliasList struct {
@@ -305,6 +345,12 @@ type AnnotationList struct {
 type CDStubList struct {
 	List
 	CDStub []CDStub
+}
+
+type NonMBTrackList struct {
+	XMLName xml.Name `track-list`
+	List
+	Track []*NonMBTrack
 }
 
 type FreeDBDiscList struct {
@@ -348,12 +394,6 @@ type CollectionList struct {
 	Collection []Collection
 }
 
-type NameCredit struct {
-	JoinPhrase string
-	Name *string
-	Artist *Artist
-}
-
 type TextRepresentation struct {
 	Language *string
 	Script *string
@@ -365,8 +405,8 @@ type TrackList struct {
 }
 
 type List struct {
-	Count uint
-	Offset uint
+	Count uint `attr`
+	Offset uint `attr`
 }
 
 type LifeSpan struct {
